@@ -8,10 +8,10 @@ Title="Command Line"
 <input type="hidden" name="#file" value="cmdline/cmdline.cfg" />
 <input type="hidden" id="command" name="#command" value="" />
 
-Enable Shellinabox Server <?=$shellinabox_version;?>:
+Enable Shellinabox Server <?=$sb_version;?>:
 : <select id="SERVICE" name="SERVICE" size="1">
-  <?=mk_option($shellinabox_service, "disable", "No");?>
-  <?=mk_option($shellinabox_service, "enable", "Yes");?>
+  <?=mk_option($sb_service, "disable", "No");?>
+  <?=mk_option($sb_service, "enable", "Yes");?>
   </select>
 
 > Enable Shellinabox Server.
@@ -20,8 +20,8 @@ Enable Shellinabox Server <?=$shellinabox_version;?>:
 > by clicking on the hyperlink below next to port, clicking on Connect button or
 > from the unRAID webgui at /Tools/CommandLineTools.
 
-Port (<?=$shellinabox_port_status;?>):
-: <input id="PORT" type="text" class="shellinabox-run" name="PORT" maxlength="40" value="<?=intval($shellinabox_port);?>" title="port must be 0-65535" placeholder="Default Port is 4200" >
+Port (<?=$sb_port_status;?>):
+: <input id="PORT" type="text" class="shellinabox-run" name="PORT" maxlength="40" value="<?=intval($sb_port);?>" title="port must be 0-65535" placeholder="Default Port is 4200" >
 
 > Port to access Shellinabox Server.
 >
@@ -29,19 +29,19 @@ Port (<?=$shellinabox_port_status;?>):
 
 Run as User:
 : <select id="USERS" class="shellinabox-run" title="select user, cannot be root" size="1">
-  <?=mk_option($shellinabox_runas, "nobody", "nobody");?>
-  <?php foreach($shellinabox_users as $shellinabox_user){echo mk_option($shellinabox_runas, trim($shellinabox_user), trim($shellinabox_user));};?>
-  <option value='other' <?=(htmlspecialchars($shellinabox_runas) != "root" && htmlspecialchars($shellinabox_runas) != "nobody" && !in_array(htmlspecialchars($shellinabox_runas), $shellinabox_users))?"selected=yes":"";?>>other</option>
-  <?=mk_option($shellinabox_runas, "root", "root");?>
+  <?=mk_option($sb_runas, "nobody", "nobody");?>
+  <?php foreach($sb_users as $sb_user){echo mk_option($sb_runas, trim($sb_user), trim($sb_user));};?>
+  <option value='other' <?=(htmlspecialchars($sb_runas) != "root" && htmlspecialchars($sb_runas) != "nobody" && !in_array(htmlspecialchars($sb_runas), $sb_users))?"selected=yes":"";?>>other</option>
+  <?=mk_option($sb_runas, "root", "root");?>
   </select>
-  <input type="hidden" id="RUNAS" name="RUNAS" maxlength="40" value=<?=htmlspecialchars($shellinabox_runas);?> >
+  <input type="hidden" id="RUNAS" name="RUNAS" maxlength="40" value=<?=htmlspecialchars($sb_runas);?> >
 
 > Select username you want to run Shellinabox Server.
 
 Connect by IP Address:
 : <select id="IPADDR" name="IPADDR" size="1" class="shellinabox-run">
-  <?=mk_option($shellinabox_ipaddr, "disable", "No");?>
-  <?=mk_option($shellinabox_ipaddr, "enable", "Yes");?>
+  <?=mk_option($sb_ipaddr, "disable", "No");?>
+  <?=mk_option($sb_ipaddr, "enable", "Yes");?>
   </select>
 
 > Select to connect by IP address.
@@ -53,8 +53,8 @@ Connect by IP Address:
 
 Enable SSL connection:
 : <select id="SSL" name="SSL" size="1" class="shellinabox-run">
-  <?=mk_option($shellinabox_ssl, "disable", "No");?>
-  <?=mk_option($shellinabox_ssl, "enable", "Yes");?>
+  <?=mk_option($sb_ssl, "disable", "No");?>
+  <?=mk_option($sb_ssl, "enable", "Yes");?>
   </select>
 
 > This will enable a secure connection by a self signed certificate.
@@ -87,14 +87,14 @@ Enable Root Home Directory Backup:
 
 
 <input id="DEFAULT" class="shellinabox-run" type="submit" value="Default">
-: <input id="btnApply" type="submit" value="Apply"><input type="button" value="Done" onClick="done()"><!--<button id="btnCert" type="button" onclick="window.location.href='http://<?=$shellinabox_host;?>/boot/config/plugins/cmdline/<?=$shellinabox_cert;?>'"> Download Cert </button>-->
+: <input id="btnApply" type="submit" value="Apply"><input type="button" value="Done" onClick="done()"><!--<button id="btnCert" type="button" onclick="window.location.href='http://<?=$sb_host;?>/boot/config/plugins/cmdline/<?=$sb_cert;?>'"> Download Cert </button>-->
 </form>
 
 <script type="text/javascript">
 $(function(){
     $('.tabs')
         .append('<div class="tab"><input type="radio" name="tabs2" id="tab2"><label for="tab2"><img class="icon" src="/plugins/cmdline/icons/terminal.png">Terminal</label></div>')
-        .append('<span class="status">Status: <?=addslashes($shellinabox_status);?> </span>');
+        .append('<span class="status">Status: <?=addslashes($sb_status);?> </span>');
 
     // hide dummy tab
     $('#tab2').parent().hide();
@@ -137,7 +137,7 @@ function checkRUNNING() {
         $('#command').val('/usr/local/emhttp/plugins/cmdline/scripts/stop');
         $('#btnApply').prop('disabled', false);
     }
-    if ("<?=$shellinabox_running;?>" == true){
+    if ("<?=$sb_running;?>" == true){
         $('.shellinabox-run').prop('disabled', true);
         $('#btnApply').disabled = 'disabled';
     }else{
@@ -165,7 +165,7 @@ function verifyDATA() {
     }
     if ($('#RUNAS').val() === null || $('#RUNAS').val() === '' || $('#RUNAS').val() === 'root' ){
         $('#RUNAS').val('nobody');
-        $shellinabox_runas = 'nobody';
+        $sb_runas = 'nobody';
     }
     $('#SERVICE').val( $('#SERVICE').val().replace(/ /g,"_") );
     $('#IPADDR').val( $('#IPADDR').val().replace(/ /g,"_") );
