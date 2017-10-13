@@ -23,6 +23,7 @@ This Plugin installs and controls shellinabox for unRaid 6.1  All dependencies a
 ##&name;
 ###2017.10.12
 - move to separate repo
+- add workaround to start service
 - update shellinabox package to latest 2.20
 - fix: disable setting when running
 ###2017.05.21
