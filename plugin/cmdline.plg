@@ -148,6 +148,15 @@ The 'plugin' package MD5 hash.
 <URL>&gitURL;/archive/&plgNAME;.md5</URL>
 </FILE>
 
+<!-- WORKAROUND -->
+<FILE Name="/tmp/start_service" Mode="0770">
+<INLINE>
+#!/bin/bash
+# start shellinabox daemon
+/etc/rc.d/rc.shellinaboxd startup
+</INLINE>
+</FILE>
+
 <!--
 The 'install' script.
 -->
@@ -172,8 +181,12 @@ else
     # upgrade package
     upgradepkg --install-new &plgPATH;/&plgNAME;.txz
 
+    # stop shellinabox daemon
+    /etc/rc.d/rc.shellinaboxd stop
+
     # start shellinabox daemon
-    /etc/rc.d/rc.shellinaboxd startup
+    echo "checking command line settings..."
+    at -M -f /tmp/start_service now 2>/dev/null
 
     # Cleaning old source files
     find &plgPATH;/ -type f -iname "&name;*.txz" ! -iname "*&version;*" -delete
