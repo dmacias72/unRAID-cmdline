@@ -1,0 +1,176 @@
+Menu="CommandLineSettingsTabs:1"
+Title="Command Line"
+---
+<? require_once '/usr/local/emhttp/plugins/cmdline/include/cmdline_settings.php'; ?>
+<link type="text/css" rel="stylesheet" href="/plugins/cmdline/css/cmdline.css">
+
+<form markdown="1" name="cmdline_settings" method="POST" action="/update.php" target="progressFrame">
+<input type="hidden" name="#file" value="cmdline/cmdline.cfg" />
+<input type="hidden" id="command" name="#command" value="" />
+
+Enable Shellinabox Server <?=$shellinabox_version;?>:
+: <select id="SERVICE" name="SERVICE" size="1">
+  <?=mk_option($shellinabox_service, "disable", "No");?>
+  <?=mk_option($shellinabox_service, "enable", "Yes");?>
+  </select>
+
+> Enable Shellinabox Server.
+>
+> You can access the server with YourServerName:port, YourServerIPAddress:port,
+> by clicking on the hyperlink below next to port, clicking on Connect button or
+> from the unRAID webgui at /Tools/CommandLineTools.
+
+Port (<?=$shellinabox_port_status;?>):
+: <input id="PORT" type="text" class="shellinabox-run" name="PORT" maxlength="40" value="<?=intval($shellinabox_port);?>" title="port must be 0-65535" placeholder="Default Port is 4200" >
+
+> Port to access Shellinabox Server.
+>
+> Default port is 4200.
+
+Run as User:
+: <select id="USERS" class="shellinabox-run" title="select user, cannot be root" size="1">
+  <?=mk_option($shellinabox_runas, "nobody", "nobody");?>
+  <?php foreach($shellinabox_users as $shellinabox_user){echo mk_option($shellinabox_runas, trim($shellinabox_user), trim($shellinabox_user));};?>
+  <option value='other' <?=(htmlspecialchars($shellinabox_runas) != "root" && htmlspecialchars($shellinabox_runas) != "nobody" && !in_array(htmlspecialchars($shellinabox_runas), $shellinabox_users))?"selected=yes":"";?>>other</option>
+  <?=mk_option($shellinabox_runas, "root", "root");?>
+  </select>
+  <input type="hidden" id="RUNAS" name="RUNAS" maxlength="40" value=<?=htmlspecialchars($shellinabox_runas);?> >
+
+> Select username you want to run Shellinabox Server.
+
+Connect by IP Address:
+: <select id="IPADDR" name="IPADDR" size="1" class="shellinabox-run">
+  <?=mk_option($shellinabox_ipaddr, "disable", "No");?>
+  <?=mk_option($shellinabox_ipaddr, "enable", "Yes");?>
+  </select>
+
+> Select to connect by IP address.
+>
+> Yes to make Settings page hyperlink, Terminal button and Tools/CommandLineTools menu connect by IP address.
+>
+> No to connect by hostname.
+
+
+Enable SSL connection:
+: <select id="SSL" name="SSL" size="1" class="shellinabox-run">
+  <?=mk_option($shellinabox_ssl, "disable", "No");?>
+  <?=mk_option($shellinabox_ssl, "enable", "Yes");?>
+  </select>
+
+> This will enable a secure connection by a self signed certificate.
+> This is mainly only useful with Firefox.
+> You will have to create an exception for the self signed certificate.
+
+Enable Command Line Screenshot:
+: <select id="SCREEN" name="SCREEN" size="1" title="shows screenshot when you log in">
+  <?=mk_option($cmdline_screen, "disable", "No");?>
+  <?=mk_option($cmdline_screen, "enable", "Yes");?>
+  </select>
+
+> The Command Line Screenshot uses a modified version of screenfetch.
+>
+> At terminal login you will be presented with a lovely ascii lime and
+>
+> unRAID stats: Login user, OS, Kernel, Uptime, Array status, Disks, CPU and RAM.
+
+Enable Root Home Directory Backup:
+: <select id="BACKUP" name="BACKUP" size="1" title="shows screenshot when you log in">
+  <?=mk_option($cmdline_backup, "disable", "No");?>
+  <?=mk_option($cmdline_backup, "enable", "Yes");?>
+  </select>
+
+> This will create a backup of /root during shutdown
+>
+> Upon restart it will restore your / root contents
+>
+> This is useful for ssh authorized_keys, bash history, midnight commander settings, htop config and whatever else you keep in /root.
+
+
+<input id="DEFAULT" class="shellinabox-run" type="submit" value="Default">
+: <input id="btnApply" type="submit" value="Apply"><input type="button" value="Done" onClick="done()"><!--<button id="btnCert" type="button" onclick="window.location.href='http://<?=$shellinabox_host;?>/boot/config/plugins/cmdline/<?=$shellinabox_cert;?>'"> Download Cert </button>-->
+</form>
+
+<script type="text/javascript">
+$(function(){
+    $('.tabs')
+        .append('<div class="tab"><input type="radio" name="tabs2" id="tab2"><label for="tab2"><img class="icon" src="/plugins/cmdline/icons/terminal.png">Terminal</label></div>')
+        .append('<span class="status">Status: <?=addslashes($shellinabox_status);?> </span>');
+
+    // hide dummy tab
+    $('#tab2').parent().hide();
+
+    // goto Command Line Tools Menu
+    $('#tab2').click(function() {
+        $.cookie('one', 'tab1', { expires:null, path: '/'});
+        location = '/Tools/CommandLineTools';
+    });
+
+
+    // dynamix plugin update api
+    <?if (function_exists('plugin_update_available') && $version = plugin_update_available('cmdline')):?>
+        showNotice('Command Line <?=htmlspecialchars($version);?> available. <a>Update</a>','cmdline');
+        $('#user-notice a').on('click', function () {
+            $('#user-notice').empty();
+        });
+    <?endif;?>
+
+    $('#SERVICE').on('change', checkRUNNING);
+    $('#USERS').on('change', checkUSER);
+    $('#DEFAULT').on('click', resetDATA);
+    $('#btnApply').on('click', verifyDATA);
+});
+
+function resetDATA() {
+    $('#IPADDR').val('disable');
+    $('#SSL').val('disable');
+    $('#SCREEN').val('disable');
+    $('#BACKUP').val('disable');
+    $('#PORT').val(4200);
+    $('#RUNAS').val('nobody');
+    $('#USERS').val('nobody');
+}
+
+function checkRUNNING() {
+    if ($('#SERVICE').val() === 'enable'){
+        $('#command').val('/usr/local/emhttp/plugins/cmdline/scripts/start');
+    } else {
+        $('#command').val('/usr/local/emhttp/plugins/cmdline/scripts/stop');
+        $('#btnApply').prop('disabled', false);
+    }
+    if ("<?=$shellinabox_running;?>" == true){
+        $('.shellinabox-run').prop('disabled', true);
+        $('#btnApply').disabled = 'disabled';
+    }else{
+        $('.shellinabox-run').prop('disabled', false);
+        $('#btnApply').prop('disabled', false);
+    }
+}
+
+function checkUSER() {
+    if ($('#USERS').val() != 'other' ) {
+        $('#RUNAS').val($('#USERS option:selected').val());
+        $('#RUNAS').prop('type', 'hidden');
+    }else{
+        $('#RUNAS').val("<?=htmlspecialchars($apache_runas);?>");
+        if ($('#RUNAS').val() === 'root')
+            $('#RUNAS').val('nobody');
+        $('#RUNAS').prop('type', 'text');
+        $('#RUNAS').prop('title', 'Run As User Cannot be Root');
+    }
+}
+
+function verifyDATA() {
+    if (!jQuery.isNumeric($('#PORT').val()) || $('#PORT').val() < 0 || $('#PORT').val() > 65535){
+            $('#PORT').val(4200);
+    }
+    if ($('#RUNAS').val() === null || $('#RUNAS').val() === '' || $('#RUNAS').val() === 'root' ){
+        $('#RUNAS').val('nobody');
+        $shellinabox_runas = 'nobody';
+    }
+    $('#SERVICE').val( $('#SERVICE').val().replace(/ /g,"_") );
+    $('#IPADDR').val( $('#IPADDR').val().replace(/ /g,"_") );
+    $('#SSL').val( $('#SSL').val().replace(/ /g,"_") );
+    $('#SCREEN').val( $('#SCREEN').val().replace(/ /g,"_") );
+    $('#RUNAS').val( $('#RUNAS').val().replace(/ /g,"_") );
+}
+</script>
