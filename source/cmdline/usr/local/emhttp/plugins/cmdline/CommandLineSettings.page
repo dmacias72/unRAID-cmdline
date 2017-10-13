@@ -21,14 +21,14 @@ Enable Shellinabox Server <?=$sb_version;?>:
 > from the unRAID webgui at /Tools/CommandLineTools.
 
 Port (<?=$sb_port_status;?>):
-: <input id="PORT" type="text" class="shellinabox-run" name="PORT" maxlength="40" value="<?=intval($sb_port);?>" title="port must be 0-65535" placeholder="Default Port is 4200" >
+: <input id="PORT" type="text" class="sb-run" name="PORT" maxlength="40" value="<?=intval($sb_port);?>" title="port must be 0-65535" placeholder="Default Port is 4200" >
 
 > Port to access Shellinabox Server.
 >
 > Default port is 4200.
 
 Run as User:
-: <select id="USERS" class="shellinabox-run" title="select user, cannot be root" size="1">
+: <select id="USERS" class="sb-run" title="select user, cannot be root" size="1">
   <?=mk_option($sb_runas, "nobody", "nobody");?>
   <?php foreach($sb_users as $sb_user){echo mk_option($sb_runas, trim($sb_user), trim($sb_user));};?>
   <option value='other' <?=(htmlspecialchars($sb_runas) != "root" && htmlspecialchars($sb_runas) != "nobody" && !in_array(htmlspecialchars($sb_runas), $sb_users))?"selected=yes":"";?>>other</option>
@@ -39,7 +39,7 @@ Run as User:
 > Select username you want to run Shellinabox Server.
 
 Connect by IP Address:
-: <select id="IPADDR" name="IPADDR" size="1" class="shellinabox-run">
+: <select id="IPADDR" name="IPADDR" size="1" class="sb-run">
   <?=mk_option($sb_ipaddr, "disable", "No");?>
   <?=mk_option($sb_ipaddr, "enable", "Yes");?>
   </select>
@@ -52,7 +52,7 @@ Connect by IP Address:
 
 
 Enable SSL connection:
-: <select id="SSL" name="SSL" size="1" class="shellinabox-run">
+: <select id="SSL" name="SSL" size="1" class="sb-run">
   <?=mk_option($sb_ssl, "disable", "No");?>
   <?=mk_option($sb_ssl, "enable", "Yes");?>
   </select>
@@ -86,7 +86,7 @@ Enable Root Home Directory Backup:
 > This is useful for ssh authorized_keys, bash history, midnight commander settings, htop config and whatever else you keep in /root.
 
 
-<input id="DEFAULT" class="shellinabox-run" type="submit" value="Default">
+<input id="DEFAULT" class="sb-run" type="submit" value="Default">
 : <input id="btnApply" type="submit" value="Apply"><input type="button" value="Done" onClick="done()"><!--<button id="btnCert" type="button" onclick="window.location.href='http://<?=$sb_host;?>/boot/config/plugins/cmdline/<?=$sb_cert;?>'"> Download Cert </button>-->
 </form>
 
@@ -118,6 +118,8 @@ $(function(){
     $('#USERS').on('change', checkUSER);
     $('#DEFAULT').on('click', resetDATA);
     $('#btnApply').on('click', verifyDATA);
+
+    checkRUNNING();
 });
 
 function resetDATA() {
@@ -137,11 +139,11 @@ function checkRUNNING() {
         $('#command').val('/usr/local/emhttp/plugins/cmdline/scripts/stop');
         $('#btnApply').prop('disabled', false);
     }
-    if ("<?=$sb_running;?>" == true){
-        $('.shellinabox-run').prop('disabled', true);
+    if ("<?=$sb_running;?>" == 1){
+        $('.sb-run').prop('disabled', true);
         $('#btnApply').disabled = 'disabled';
     }else{
-        $('.shellinabox-run').prop('disabled', false);
+        $('.sb-run').prop('disabled', false);
         $('#btnApply').prop('disabled', false);
     }
 }
