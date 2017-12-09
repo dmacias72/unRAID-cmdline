@@ -436,9 +436,9 @@ detectcpu () {
     if [ -n "$cpu_mhz" ];then
         if [ $(echo $cpu_mhz | cut -d. -f1) -gt 999 ];then
             cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
-            cpu="$cpu @ ${cpu_ghz}GHz"
+            cpu="$cpu @${cpu_ghz}GHz"
         else
-            cpu="$cpu @ ${cpu_mhz}MHz"
+            cpu="$cpu @${cpu_mhz}MHz"
         fi
     fi
 
