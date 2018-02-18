@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "cmdline">
 <!ENTITY author    "dmacias72">
-<!ENTITY version   "2017.12.09">
+<!ENTITY version   "2018.02.18">
 <!ENTITY launch    "Settings/CommandLineSettingsTabs">
 <!ENTITY gitURL    "https://raw.githubusercontent.com/&author;/unRAID-cmdline/master">
 <!ENTITY pluginURL "&gitURL;/plugin/&name;.plg">
@@ -21,6 +21,10 @@ This Plugin installs and controls shellinabox for unRaid 6.1  All dependencies a
 
 <CHANGES>
 ##&name;
+###2018.02.18
+- add support for built in letsencrypt certificates
+- add support for command line button replacing built in terminal button
+- remove runas user support
 ###2017.12.09
 - fix reduce screenfetch cpu line to fit within 80 chars
 ###2017.10.12
@@ -129,10 +133,9 @@ SERVICE="disable"
 SSL="disable"
 SCREEN="disable"
 BACKUP="disable"
+BUTTON="disable"
 IPADDR="disable"
 PORT="4200"
-RUNAS="nobody"
-CERT="certificate.pem"
 ]]>
 </INLINE>
 </FILE>
@@ -198,7 +201,7 @@ else
     echo ""
     echo "-----------------------------------------------------------"
     echo " &name; has been installed."
-    echo " Copyright 2015-2017, &author;"
+    echo " Copyright 2015-2018, &author;"
     echo " Version: &version;"
     echo "-----------------------------------------------------------"
     echo ""
@@ -223,7 +226,7 @@ rm -f &plgPATH;/*.txz \
 echo ""
 echo "-----------------------------------------------------------"
 echo " &name; has been removed."
-echo " Copyright 2015-2017, &author;"
+echo " Copyright 2015-2018, &author;"
 echo " Version: &version;"
 echo "-----------------------------------------------------------"
 echo ""
