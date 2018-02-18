@@ -27,17 +27,6 @@ Port (<?=$sb_port_status;?>):
 >
 > Default port is 4200.
 
-Run as User:
-: <select id="USERS" class="sb-run" title="select user, cannot be root" size="1">
-  <?=mk_option($sb_runas, "nobody", "nobody");?>
-  <?php foreach($sb_users as $sb_user){echo mk_option($sb_runas, trim($sb_user), trim($sb_user));};?>
-  <option value='other' <?=(htmlspecialchars($sb_runas) != "root" && htmlspecialchars($sb_runas) != "nobody" && !in_array(htmlspecialchars($sb_runas), $sb_users))?"selected=yes":"";?>>other</option>
-  <?=mk_option($sb_runas, "root", "root");?>
-  </select>
-  <input type="hidden" id="RUNAS" name="RUNAS" maxlength="40" value=<?=htmlspecialchars($sb_runas);?> >
-
-> Select username you want to run Shellinabox Server.
-
 Connect by IP Address:
 : <select id="IPADDR" name="IPADDR" size="1" class="sb-run">
   <?=mk_option($sb_ipaddr, "disable", "No");?>
@@ -85,9 +74,16 @@ Enable Root Home Directory Backup:
 >
 > This is useful for ssh authorized_keys, bash history, midnight commander settings, htop config and whatever else you keep in /root.
 
+Enable Command Line Button:
+: <select id="BUTTON" name="BUTTON" size="1" title="replaces default terminal button">
+  <?=mk_option($cmdline_button, "disable", "No");?>
+  <?=mk_option($cmdline_button, "enable", "Yes");?>
+  </select>
+
+> This will replace the default terminal button with a shellinabox command line button
 
 <input id="DEFAULT" class="sb-run" type="submit" value="Default">
-: <input id="btnApply" type="submit" value="Apply"><input type="button" value="Done" onClick="done()"><!--<button id="btnCert" type="button" onclick="window.location.href='http://<?=$sb_host;?>/boot/config/plugins/cmdline/<?=$sb_cert;?>'"> Download Cert </button>-->
+: <input id="btnApply" type="submit" value="Apply"><input type="button" value="Done" onClick="done()">
 </form>
 
 <script type="text/javascript">
@@ -115,7 +111,6 @@ $(function(){
     <?endif;?>
 
     $('#SERVICE').on('change', checkRUNNING);
-    $('#USERS').on('change', checkUSER);
     $('#DEFAULT').on('click', resetDATA);
     $('#btnApply').on('click', verifyDATA);
 
@@ -125,11 +120,10 @@ $(function(){
 function resetDATA() {
     $('#IPADDR').val('disable');
     $('#SSL').val('disable');
-    $('#SCREEN').val('disable');
+    $('#SCREEN').val('enable');
     $('#BACKUP').val('disable');
+    $('#BUTTON').val('disable');
     $('#PORT').val(4200);
-    $('#RUNAS').val('nobody');
-    $('#USERS').val('nobody');
 }
 
 function checkRUNNING() {
@@ -148,31 +142,15 @@ function checkRUNNING() {
     }
 }
 
-function checkUSER() {
-    if ($('#USERS').val() != 'other' ) {
-        $('#RUNAS').val($('#USERS option:selected').val());
-        $('#RUNAS').prop('type', 'hidden');
-    }else{
-        $('#RUNAS').val("<?=htmlspecialchars($sb_runas);?>");
-        if ($('#RUNAS').val() === 'root')
-            $('#RUNAS').val('nobody');
-        $('#RUNAS').prop('type', 'text');
-        $('#RUNAS').prop('title', 'Run As User Cannot be Root');
-    }
-}
-
 function verifyDATA() {
     if (!jQuery.isNumeric($('#PORT').val()) || $('#PORT').val() < 0 || $('#PORT').val() > 65535){
             $('#PORT').val(4200);
-    }
-    if ($('#RUNAS').val() === null || $('#RUNAS').val() === '' || $('#RUNAS').val() === 'root' ){
-        $('#RUNAS').val('nobody');
-        $sb_runas = 'nobody';
     }
     $('#SERVICE').val( $('#SERVICE').val().replace(/ /g,"_") );
     $('#IPADDR').val( $('#IPADDR').val().replace(/ /g,"_") );
     $('#SSL').val( $('#SSL').val().replace(/ /g,"_") );
     $('#SCREEN').val( $('#SCREEN').val().replace(/ /g,"_") );
-    $('#RUNAS').val( $('#RUNAS').val().replace(/ /g,"_") );
+    $('#BACKUP').val( $('#BACKUP').val().replace(/ /g,"_") );
+    $('#BUTTON').val( $('#BUTTON').val().replace(/ /g,"_") );
 }
 </script>

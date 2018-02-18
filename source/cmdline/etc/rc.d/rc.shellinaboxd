@@ -6,13 +6,33 @@ SHELLINABOXD="/usr/sbin/$PROG"
 LOCKFILE="/var/lock/$PROG"
 PIDFILE="/var/run/$PROG.pid"
 PROFILE="/root/.bash_profile"
-CSS="/usr/local/emhttp/plugins/cmdline/css"
+EMHTTP="/usr/local/emhttp/plugins"
+CSS="$EMHTTP/cmdline/css"
 PLGPATH="/boot/config/plugins/cmdline"
 CONFIG="$PLGPATH/cmdline.cfg"
 USER_CSS="Color:+$CSS/color.css,Monochrome:-$CSS/monochrome.css;White:+$CSS/white-on-black.css,Black:-$CSS/black-on-white.css,Blue:-$CSS/blue-on-black.css,Green:-$CSS/green-on-black.css,Pink:-$CSS/pink-on-black.css,Purple:-$CSS/purple-on-black.css,Red:-$CSS/red-on-black.css,Yellow:-$CSS/yellow-on-black.css"
+BUTTON_OG="$EMHTTP/dynamix/TerminalButton.page"
+BUTTON_SB="$EMHTTP/cmdline/CommandLineButton.page"
 
 # read our configuration
 [ -e "$CONFIG" ] && source $CONFIG
+
+# toggle original terminal button with command line button
+if [[ "$BUTTON" == "enable" && "$SERVICE" == "enable" ]]; then
+    if [ -e "$BUTTON_OG" ]; then
+        mv -f $BUTTON_OG ${BUTTON_OG}.old
+    fi
+    if [ -e "${BUTTON_SB}.old" ]; then
+        mv -f  ${BUTTON_SB}.old $BUTTON_SB
+    fi
+else
+    if [ -e "${BUTTON_OG}.old" ]; then
+        mv -f ${BUTTON_OG}.old $BUTTON_OG
+    fi
+    if [ -e "$BUTTON_SB" ]; then
+        mv -f $BUTTON_SB ${BUTTON_SB}.old
+    fi
+fi
 
 # add screenfetch to bash profile
 if [ "$SCREEN" == "enable" ]; then
@@ -32,13 +52,22 @@ fi
 shellinaboxd_start() {
     # no-op if already running
     if [[ "$SERVICE" == "enable"  &&  ! -r "$PIDFILE" ]]; then
+        HOST="$(echo $HOSTNAME | awk '{print tolower($0)}')"
+        HOSTSSL=''
+        if [ -e /etc/ssl/certs/unraid_bundle.pem ]; then
+            HOSTSSL=$(openssl x509 -in /etc/ssl/certs/unraid_bundle.pem -noout -subject | awk '{split($2,a,"/CN="); print "-"tolower(a[2])}')
+        fi
+
+        ln -sf /etc/ssl/certs/unraid_bundle.pem /etc/ssl/certs/certificate.pem
+        ln -sf /etc/ssl/certs/unraid_bundle.pem /etc/ssl/certs/certificate-${HOST}.pem
+        ln -sf /etc/ssl/certs/unraid_bundle.pem /etc/ssl/certs/certificate${HOSTSSL}.pem
 
         SSL_CONFIG=""
         [ $SSL == "disable" ] && SSL_CONFIG="--disable-ssl"
 
         echo "starting shellinaboxd..."
         sleep 1
-        nohup /usr/sbin/$PROG --user=$RUNAS --background=$PIDFILE --port=$PORT --cert=$PLGPATH --user-css=$USER_CSS $SSL_CONFIG > /dev/null 2>&1 | logger -t$PROG &
+        nohup /usr/sbin/$PROG --user=root --background=$PIDFILE --port=$PORT --cert=/etc/ssl/certs --user-css=$USER_CSS $SSL_CONFIG > /dev/null 2>&1 | logger -t$PROG &
             touch $LOCKFILE
             TIMER=0
             while [ ! -e $PIDFILE ]; do

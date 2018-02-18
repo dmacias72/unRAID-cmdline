@@ -6,7 +6,7 @@ Type="xmenu"
 <link type="text/css" rel="stylesheet" href="/plugins/cmdline/css/cmdline.css">
 
 <div>
-    <iframe id="shell" src="<?=htmlspecialchars($sb_http);?>://<?=htmlspecialchars($sb_host);?>:<?=htmlspecialchars($sb_port);?>">
+    <iframe id="shell" src="<?=htmlspecialchars($sb_http);?>://<?=htmlspecialchars($sb_host);?>:<?=intval($sb_port);?>">
     </iframe>
 </div>
 
