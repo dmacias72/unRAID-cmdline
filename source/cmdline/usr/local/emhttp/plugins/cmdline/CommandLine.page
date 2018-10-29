@@ -3,7 +3,7 @@ Title="Command Line"
 Type="xmenu"
 ---
 <? require_once '/usr/local/emhttp/plugins/cmdline/include/cmdline_config.php'; ?>
-<link type="text/css" rel="stylesheet" href="/plugins/cmdline/css/cmdline.css">
+<link type="text/css" rel="stylesheet" href="<?=autov('/plugins/cmdline/css/cmdline.css');?>">
 
 <div>
     <iframe id="shell" src="<?=htmlspecialchars($sb_http);?>://<?=htmlspecialchars($sb_host);?>:<?=intval($sb_port);?>">

@@ -2,7 +2,7 @@ Menu="CommandLineSettingsTabs:1"
 Title="Command Line"
 ---
 <? require_once '/usr/local/emhttp/plugins/cmdline/include/cmdline_settings.php'; ?>
-<link type="text/css" rel="stylesheet" href="/plugins/cmdline/css/cmdline.css">
+<link type="text/css" rel="stylesheet" href="<?=autov('/plugins/cmdline/css/cmdline.css');?>">
 
 <form markdown="1" name="cmdline_settings" method="POST" action="/update.php" target="progressFrame">
 <input type="hidden" name="#file" value="cmdline/cmdline.cfg" />
