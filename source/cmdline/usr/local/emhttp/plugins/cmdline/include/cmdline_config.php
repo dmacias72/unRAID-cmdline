@@ -14,7 +14,8 @@ if($var['version'] >= "6.4"){
         if($sb_ipaddr == 'disable')
             $sb_host = ($sb_ipaddr == 'disable') ? $var['NAME'] : $_SERVER['SERVER_ADDR'];
     }else{
-        $sb_host = $_SERVER['HTTP_HOST'];
+        $sb_host_arr = explode(':', $_SERVER['HTTP_HOST']);
+        $sb_host = $sb_host_arr[0];
     }
 
 }else{
