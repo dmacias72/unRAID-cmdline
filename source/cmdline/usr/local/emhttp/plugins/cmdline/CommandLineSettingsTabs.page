@@ -1,5 +1,5 @@
 Menu="NetworkServices"
-Icon="cmdline.png"
+Icon="terminal"
 Title="Command Line"
 Type="xmenu"
 Tabs="true"
