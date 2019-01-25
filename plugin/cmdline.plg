@@ -23,6 +23,7 @@ This Plugin installs and controls shellinabox for unRaid 6.1  All dependencies a
 ##&name;
 ###2019.01.24
 - remove port from host name
+- update icon for settings page to fa font
 ###2018.10.28
 - remove support link from readme
 - add autov to css links
