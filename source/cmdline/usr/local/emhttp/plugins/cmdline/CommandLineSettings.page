@@ -1,5 +1,6 @@
 Menu="CommandLineSettingsTabs:1"
 Title="Command Line"
+Tag="cog"
 ---
 <? require_once '/usr/local/emhttp/plugins/cmdline/include/cmdline_settings.php'; ?>
 <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/cmdline/css/cmdline.css');?>">
@@ -89,7 +90,7 @@ Enable Command Line Button:
 <script type="text/javascript">
 $(function(){
     $('.tabs')
-        .append('<div class="tab"><input type="radio" name="tabs2" id="tab2"><label for="tab2"><img class="icon" src="/plugins/cmdline/icons/terminal.png">Terminal</label></div>')
+        .append('<div class="tab"><input type="radio" name="tabs2" id="tab2"><label for="tab2"><i class="icon fa fa-terminal"></i>Terminal</label></div>')
         .append('<span class="status">Status: <?=addslashes($sb_status);?> </span>');
 
     // hide dummy tab

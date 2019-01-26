@@ -1,5 +1,6 @@
 Menu="CommandLineSettingsTabs:2"
 Title="Terminal"
+Tag="icon-app"
 Markdown="false"
 ---
 <?
