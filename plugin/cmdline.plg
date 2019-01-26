@@ -3,7 +3,7 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "cmdline">
 <!ENTITY author    "dmacias72">
-<!ENTITY version   "2019.01.24">
+<!ENTITY version   "2019.01.25">
 <!ENTITY launch    "Settings/CommandLineSettingsTabs">
 <!ENTITY gitURL    "https://raw.githubusercontent.com/&author;/unRAID-cmdline/master">
 <!ENTITY pluginURL "&gitURL;/plugin/&name;.plg">
@@ -21,6 +21,8 @@ This Plugin installs and controls shellinabox for unRaid 6.1  All dependencies a
 
 <CHANGES>
 ##&name;
+###2019.01.25
+- remove all icons and convert to fa fonts
 ###2019.01.24
 - remove port from host name
 - update icon for settings page to fa font
